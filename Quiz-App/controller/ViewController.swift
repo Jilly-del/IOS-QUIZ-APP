@@ -17,20 +17,43 @@ class ViewController: UIViewController {
     @IBOutlet weak var option3: UIButton!
     @IBOutlet weak var option4: UIButton!
     var quizBrain = QuizBrain()
-       
+    var shouldResetQuiz = false
+    
+    override func viewWillAppear(_ animated: Bool) {
+           super.viewWillAppear(animated)
+        if shouldResetQuiz {
+                    quizBrain.score = 0
+                    quizBrain.questionNumber = 0
+                    shouldResetQuiz = false
+                    UpdateUI()
+                }
+       }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         UpdateUI()
     }
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "resultSegue" {
+             let destinationVC = segue.destination as! ResultViewController
+             destinationVC.quizBrain = quizBrain
+            destinationVC.parentVC = self
+         }
+    }
+    
  
     @IBAction func answerButtonPressed(_ sender: UIButton) {
         let userAnswer = sender.currentTitle!
         let userGotItRight = quizBrain.AnsweredQuestion(userAnswer)
         sender.backgroundColor = userGotItRight ? UIColor.green :UIColor.red
         
-        let _: () = quizBrain.nextQuestion()
+        if quizBrain.questionNumber + 1 == quizBrain.quiz.count {
+            
+             performSegue(withIdentifier: "resultSegue", sender: self)
+         } else {
+             quizBrain.nextQuestion()
+         }
     
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             self.UpdateUI()

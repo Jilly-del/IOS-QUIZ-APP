@@ -66,7 +66,6 @@ struct QuizBrain {
     }
     
     mutating func AnsweredQuestion (_ answer : String) -> Bool{
-        print(answer, quiz[questionNumber].answer)
         if answer == quiz[questionNumber].answer {
             score += 1
             return true }
@@ -75,6 +74,7 @@ struct QuizBrain {
         }
     }
     
+
     mutating  func nextQuestion() {
            if questionNumber + 1 < quiz.count {
                questionNumber += 1
