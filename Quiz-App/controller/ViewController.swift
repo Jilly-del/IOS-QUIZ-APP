@@ -11,45 +11,54 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var questionLabel: UILabel!
     @IBOutlet weak var progressBar: UIProgressView!
-    @IBOutlet weak var trueButton: UIButton!
-    @IBOutlet weak var falseButton: UIButton!
-    
     @IBOutlet weak var scores: UILabel!
-    var questionNumber = 0
+    @IBOutlet weak var option1: UIButton!
+    @IBOutlet weak var option2: UIButton!
+    @IBOutlet weak var option3: UIButton!
+    @IBOutlet weak var option4: UIButton!
     var quizBrain = QuizBrain()
        
     
     override func viewDidLoad() {
         super.viewDidLoad()
         UpdateUI()
-      
     }
 
-    
+ 
     @IBAction func answerButtonPressed(_ sender: UIButton) {
         let userAnswer = sender.currentTitle!
         let userGotItRight = quizBrain.AnsweredQuestion(userAnswer)
+        sender.backgroundColor = userGotItRight ? UIColor.green :UIColor.red
         
-        
-        if (userGotItRight) {
-            sender.backgroundColor = UIColor.green
-        } else{
-            sender.backgroundColor = UIColor.red
-        }
-        Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(UpdateUI), userInfo: nil, repeats: false)
-        
+        let _: () = quizBrain.nextQuestion()
+    
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.UpdateUI()
+               sender.backgroundColor = UIColor.clear
+            
+           }
+
     }
     
+    
    @objc func UpdateUI(){
-        
-       trueButton.backgroundColor = UIColor.clear
-       falseButton.backgroundColor = UIColor.clear
-       let question = quizBrain.question()
+       
+       questionLabel.text = quizBrain.getQuestionText()
+       
+       var options = quizBrain.getOptions()
+       option1.setTitle(options[0], for: .normal)
+       option2.setTitle(options[1], for: .normal)
+       option3.setTitle(options[2], for: .normal)
+       option4.setTitle(options[3], for: .normal)
+       
+      
        let progress = quizBrain.progress()
+       progressBar.progress = progress
+       
        let score = String(quizBrain.score)
        scores.text = "Score: \(score)"
-        questionLabel.text = question
-       progressBar.progress = progress
+      
+       
     }
 }
 

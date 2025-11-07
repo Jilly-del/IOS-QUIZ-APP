@@ -8,9 +8,13 @@
 import Foundation
 struct Question {
     let question : String
+    let options : [String]
     let answer : String
-    init(q : String, a: String) {
-        question = q
-        answer = a
+    init(question: String, options: [String], answer: String) {
+        self.question = question
+        self.options = options
+        self.answer = answer
     }
 }
+
+
